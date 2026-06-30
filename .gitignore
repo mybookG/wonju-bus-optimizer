@@ -1,11 +1,21 @@
+# Gradle
 .gradle/
 build/
+out/
+
+# Secrets
 .env
 application-prod.yml
 application-local.yml
+
+# Java
 *.class
 *.jar
 *.log
+
+# IDE
 .idea/
 *.iml
-out/
+
+# Claude Code
+CLAUDE.md
