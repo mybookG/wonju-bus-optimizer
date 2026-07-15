@@ -5,11 +5,11 @@ import com.wonju.bus.domain.route.RouteRecommendation;
 public record RouteRecommendResponse(
         Long id,
         String areaCode,
-        String blindSpotId,
+        Long blindSpotId,
         String recommendType,
         String description,
         String routePath,
-        Integer priorityScore,
+        Double priorityScore,
         Long estimatedBeneficiaries,
         String status
 ) {
@@ -17,13 +17,13 @@ public record RouteRecommendResponse(
         return new RouteRecommendResponse(
                 rec.getId(),
                 rec.getAreaCode(),
-                rec.getBlindSpotId(),
+                rec.getBlindSpot().getId(),
                 rec.getRecommendType().name(),
                 rec.getDescription(),
                 rec.getRoutePath(),
                 rec.getPriorityScore(),
                 rec.getEstimatedBeneficiaries(),
-                rec.getStatus()
+                rec.getStatus().name()
         );
     }
 }

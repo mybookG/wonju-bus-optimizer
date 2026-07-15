@@ -8,12 +8,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -31,8 +33,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 jwtTokenProvider.validateToken(token);
                 String username = jwtTokenProvider.extractUsername(token);
+                String role = jwtTokenProvider.extractRole(token);
+                List<GrantedAuthority> authorities = role != null
+                        ? List.of(new SimpleGrantedAuthority(role))
+                        : Collections.emptyList();
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        username, null, List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+                        username, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (BusServiceException e) {
                 log.warn("[JwtAuthenticationFilter] 토큰 검증 실패 - {}", e.getMessage());

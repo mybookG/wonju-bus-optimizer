@@ -22,7 +22,7 @@ public class DemandScore extends BaseEntity {
     private String areaName;
 
     @Column(nullable = false)
-    private Integer demandScore;
+    private Double demandScore;
 
     @Column(nullable = false)
     private Double supplyIndex;
@@ -43,7 +43,7 @@ public class DemandScore extends BaseEntity {
     private String geminiRawResponse;
 
     @Builder
-    public DemandScore(String areaCode, String areaName, Integer demandScore, Double supplyIndex,
+    public DemandScore(String areaCode, String areaName, Double demandScore, Double supplyIndex,
                        Long population, Long buildingCount, Long welfareFacilityCount,
                        LocalDate analyzedDate, String geminiRawResponse) {
         this.areaCode = areaCode;

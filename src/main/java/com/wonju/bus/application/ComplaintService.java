@@ -7,6 +7,8 @@ import com.wonju.bus.domain.complaint.Complaint;
 import com.wonju.bus.domain.complaint.ComplaintCategory;
 import com.wonju.bus.domain.complaint.repository.ComplaintRepository;
 import com.wonju.bus.domain.demand.repository.BlindSpotRepository;
+import com.wonju.bus.interfaces.admin.dto.ComplaintResponse;
+import com.wonju.bus.interfaces.citizen.dto.ComplaintCreateResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -32,7 +34,7 @@ public class ComplaintService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public Complaint submitComplaint(String phoneNumber, String content, double lat, double lon) {
+    public ComplaintCreateResponse submitComplaint(String phoneNumber, String content, double lat, double lon) {
         String maskedPhone = SmsVerificationService.maskPhone(phoneNumber);
         checkDailyLimit(maskedPhone);
 
@@ -42,15 +44,15 @@ public class ComplaintService {
                 .latitude(lat)
                 .longitude(lon)
                 .build();
-        complaintRepository.save(complaint);
+        complaintRepository.saveAndFlush(complaint);
         log.info("[ComplaintService] 제보 접수 - phone={}, lat={}, lon={}", maskedPhone, lat, lon);
 
         // 트랜잭션 커밋 후 AI 분류 실행 (트랜잭션 내 외부 API 호출 금지)
         eventPublisher.publishEvent(new ComplaintClassifyEvent(this, complaint.getId()));
-        return complaint;
+        return ComplaintCreateResponse.from(complaint);
     }
 
-    @Transactional
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRES_NEW)
     @TransactionalEventListener
     public void classifyComplaint(ComplaintClassifyEvent event) {
         Complaint complaint = complaintRepository.findById(event.complaintId())
@@ -72,8 +74,8 @@ public class ComplaintService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Complaint> getComplaints(Pageable pageable) {
-        return complaintRepository.findAll(pageable);
+    public Page<ComplaintResponse> getComplaints(Pageable pageable) {
+        return complaintRepository.findAll(pageable).map(ComplaintResponse::from);
     }
 
     private void checkDailyLimit(String maskedPhone) {

@@ -8,7 +8,7 @@ public record DemandScoreResponse(
         Long id,
         String areaCode,
         String areaName,
-        Integer demandScore,
+        Double demandScore,
         Double supplyIndex,
         Long population,
         LocalDate analyzedDate

@@ -29,7 +29,7 @@ public interface AiAnalysisPort {
     ) {}
 
     record DemandAnalysisResult(
-            int demandScore,
+            double demandScore,
             double supplyIndex,
             String analysisReason,
             String rawResponse
@@ -39,7 +39,7 @@ public interface AiAnalysisPort {
             String blindSpotId,
             String areaCode,
             String areaName,
-            int demandScore,
+            double demandScore,
             Map<String, Object> nearbyRoutes
     ) {}
 
@@ -47,7 +47,7 @@ public interface AiAnalysisPort {
             String recommendType,
             String description,
             String routePath,
-            int priorityScore,
+            double priorityScore,
             long estimatedBeneficiaries
     ) {}
 

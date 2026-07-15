@@ -34,7 +34,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/demand/**").permitAll()
                         // 관리자 API - 인증 필요
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/recommendations/**").hasRole("ADMIN")
                         // 나머지
                         .anyRequest().authenticated()
                 )
