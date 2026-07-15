@@ -14,6 +14,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.transaction.event.TransactionalEventListener;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -99,7 +101,7 @@ public class DemandAnalysisService {
     }
 
     private AiAnalysisPort.DemandAnalysisResult fallbackDemandAnalysis(long population, int intervalMinutes) {
-        int score = (int) Math.min(100, population / 1000.0 * 10);
+        double score = Math.min(100.0, population / 1000.0 * 10);
         double supplyIndex = intervalMinutes > 0 ? Math.min(1.0, 10.0 / intervalMinutes) : 0.0;
         return new AiAnalysisPort.DemandAnalysisResult(score, supplyIndex, "규칙 기반 fallback", null);
     }
@@ -107,6 +109,25 @@ public class DemandAnalysisService {
     public void triggerReanalysis(String areaCode) {
         log.info("[DemandAnalysisService] 수요 재분석 트리거 - areaCode={}", areaCode);
         eventPublisher.publishEvent(new DemandReanalysisEvent(this, areaCode));
+    }
+
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRES_NEW)
+    @TransactionalEventListener(fallbackExecution = true)
+    public void onReanalysisRequested(DemandReanalysisEvent event) {
+        log.info("[DemandAnalysisService] 재분석 이벤트 수신 - areaCode={}", event.areaCode());
+        List<DemandScore> history = demandScoreRepository.findByAreaCodeOrderByAnalyzedDateDesc(event.areaCode());
+        if (history.isEmpty()) {
+            log.warn("[DemandAnalysisService] 재분석 대상 없음 - areaCode={}", event.areaCode());
+            return;
+        }
+        DemandScore last = history.get(0);
+        int inferredInterval = last.getSupplyIndex() > 0
+                ? (int) Math.min(120, 10.0 / last.getSupplyIndex())
+                : 60;
+        analyze(last.getAreaCode(), last.getAreaName(), last.getPopulation(),
+                last.getBuildingCount() != null ? last.getBuildingCount() : 0L,
+                last.getWelfareFacilityCount() != null ? last.getWelfareFacilityCount() : 0L,
+                inferredInterval);
     }
 
     public record DemandReanalysisEvent(Object source, String areaCode) {}

@@ -18,7 +18,7 @@ public class GeminiPromptBuilder {
 
                 아래 JSON 형식으로만 응답하세요. 다른 텍스트는 포함하지 마세요.
                 {
-                  "demandScore": 0~100 사이 정수,
+                  "demandScore": 0~100 사이 소수 (소수점 첫째 자리, 예: 72.5),
                   "supplyIndex": 0.0~1.0 사이 소수 (현재 공급 충족도),
                   "analysisReason": "분석 근거 (한국어, 100자 이내)"
                 }
@@ -35,12 +35,12 @@ public class GeminiPromptBuilder {
 
                 사각지대 ID: %s
                 지역: %s (%s)
-                수요 점수: %d / 100
+                수요 점수: %.1f / 100
                 현황: 버스 서비스가 부족한 지역입니다.
 
                 아래 JSON 형식으로만 응답하세요.
                 {
-                  "recommendType": "NEW_ROUTE|EXTEND_ROUTE|INCREASE_FREQUENCY 중 하나",
+                  "recommendType": "NEW_ROUTE|ROUTE_EXTENSION|FREQUENCY_INCREASE|DEMAND_RESPONSIVE 중 하나",
                   "description": "개선 방안 설명 (한국어, 200자 이내)",
                   "routePath": "제안 경로 (정류장명 → 정류장명 형식)",
                   "priorityScore": 0~100 사이 정수,
@@ -59,7 +59,7 @@ public class GeminiPromptBuilder {
 
                 아래 JSON 형식으로만 응답하세요.
                 {
-                  "category": "NO_ROUTE|INTERVAL|OVERCROWDING|STOP_CONDITION 중 하나",
+                  "category": "INSUFFICIENT_FREQUENCY|ROUTE_MISSING|STOP_MISSING|INCONVENIENT_TRANSFER|SAFETY_ISSUE|OTHER 중 하나",
                   "severityScore": 1~10 사이 정수 (1: 경미, 10: 매우 심각),
                   "summary": "분류 근거 요약 (한국어, 50자 이내)"
                 }

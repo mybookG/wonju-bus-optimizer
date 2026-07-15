@@ -26,7 +26,7 @@ public class BlindSpot extends BaseEntity {
     private String areaName;
 
     @Column(nullable = false)
-    private Integer demandScore;
+    private Double demandScore;
 
     @Column(nullable = false)
     private Double supplyIndex;
@@ -45,7 +45,7 @@ public class BlindSpot extends BaseEntity {
 
     @Builder
     public BlindSpot(String blindSpotId, String areaCode, String areaName,
-                     Integer demandScore, Double supplyIndex,
+                     Double demandScore, Double supplyIndex,
                      Double centerLatitude, Double centerLongitude, LocalDate detectedDate) {
         this.blindSpotId = blindSpotId;
         this.areaCode = areaCode;

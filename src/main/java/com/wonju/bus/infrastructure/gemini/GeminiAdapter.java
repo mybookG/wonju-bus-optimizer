@@ -40,7 +40,7 @@ public class GeminiAdapter extends HttpClientSupport implements AiAnalysisPort {
         try {
             JsonNode node = objectMapper.readTree(json);
             return new DemandAnalysisResult(
-                    node.path("demandScore").asInt(),
+                    node.path("demandScore").asDouble(),
                     node.path("supplyIndex").asDouble(),
                     node.path("analysisReason").asText(),
                     json
@@ -63,7 +63,7 @@ public class GeminiAdapter extends HttpClientSupport implements AiAnalysisPort {
                     node.path("recommendType").asText(),
                     node.path("description").asText(),
                     node.path("routePath").asText(),
-                    node.path("priorityScore").asInt(),
+                    node.path("priorityScore").asDouble(),
                     node.path("estimatedBeneficiaries").asLong()
             );
         } catch (Exception e) {
@@ -92,11 +92,11 @@ public class GeminiAdapter extends HttpClientSupport implements AiAnalysisPort {
     }
 
     private String callGemini(String prompt) {
-        String url = "/v1beta/models/%s:generateContent?key=%s"
-                .formatted(properties.getModel(), properties.getApiKey());
+        String url = "/v1beta/models/%s:generateContent".formatted(properties.getModel());
 
         GeminiResponse response = webClient.post()
                 .uri(url)
+                .header("x-goog-api-key", properties.getApiKey())
                 .bodyValue(GeminiRequest.of(prompt))
                 .retrieve()
                 .bodyToMono(GeminiResponse.class)

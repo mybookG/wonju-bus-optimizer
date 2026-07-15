@@ -23,6 +23,7 @@ public class SmsVerificationService {
     private final SmsPort smsPort;
     private final StringRedisTemplate redisTemplate;
 
+    @org.springframework.transaction.annotation.Transactional
     public void sendCode(String phoneNumber) {
         String code = generateCode();
         String maskedPhone = maskPhone(phoneNumber);
@@ -32,6 +33,7 @@ public class SmsVerificationService {
         log.info("[SmsVerificationService] 인증코드 발송 - phone={}", maskedPhone);
     }
 
+    @org.springframework.transaction.annotation.Transactional
     public void verifyCode(String phoneNumber, String inputCode) {
         String key = KEY_PREFIX + phoneNumber;
         String savedCode = redisTemplate.opsForValue().get(key);

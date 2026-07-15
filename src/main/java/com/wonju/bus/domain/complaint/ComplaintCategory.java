@@ -1,8 +1,10 @@
 package com.wonju.bus.domain.complaint;
 
 public enum ComplaintCategory {
-    NO_ROUTE,       // 노선 없음
-    INTERVAL,       // 배차 간격 불편
-    OVERCROWDING,   // 혼잡
-    STOP_CONDITION  // 정류장 시설 불편
+    INSUFFICIENT_FREQUENCY, // 배차 간격 부족
+    ROUTE_MISSING,          // 노선 미운행 지역
+    STOP_MISSING,           // 정류장 없음
+    INCONVENIENT_TRANSFER,  // 환승 불편
+    SAFETY_ISSUE,           // 안전 문제
+    OTHER                   // 기타
 }

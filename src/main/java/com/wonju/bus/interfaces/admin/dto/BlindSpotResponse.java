@@ -9,7 +9,7 @@ public record BlindSpotResponse(
         String blindSpotId,
         String areaCode,
         String areaName,
-        Integer demandScore,
+        Double demandScore,
         Double supplyIndex,
         Double centerLatitude,
         Double centerLongitude,

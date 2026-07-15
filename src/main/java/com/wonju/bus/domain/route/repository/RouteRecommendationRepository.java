@@ -1,5 +1,7 @@
 package com.wonju.bus.domain.route.repository;
 
+import com.wonju.bus.domain.demand.BlindSpot;
+import com.wonju.bus.domain.route.RecommendationStatus;
 import com.wonju.bus.domain.route.RouteRecommendation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +13,9 @@ public interface RouteRecommendationRepository extends JpaRepository<RouteRecomm
 
     Page<RouteRecommendation> findByAreaCode(String areaCode, Pageable pageable);
 
-    List<RouteRecommendation> findByBlindSpotId(String blindSpotId);
+    Page<RouteRecommendation> findByAreaCodeAndStatus(String areaCode, RecommendationStatus status, Pageable pageable);
 
-    List<RouteRecommendation> findByStatusOrderByPriorityScoreDesc(String status);
+    List<RouteRecommendation> findByBlindSpot(BlindSpot blindSpot);
+
+    List<RouteRecommendation> findByStatusOrderByPriorityScoreDesc(RecommendationStatus status);
 }

@@ -44,7 +44,8 @@ public enum ErrorCode {
     AI_ANALYSIS_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AI 분석에 실패했습니다."),
 
     // 외부 API
-    PUBLIC_API_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "공공 API가 응답하지 않습니다.");
+    PUBLIC_API_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "공공 API가 응답하지 않습니다."),
+    COORD_TRANSFORM_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "좌표 변환에 실패했습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
